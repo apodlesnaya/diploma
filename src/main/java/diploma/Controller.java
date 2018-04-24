@@ -42,18 +42,23 @@ public class Controller {
 
     private List<WordEntity> parsedWords;
 
-    private static final String HELP = "Welcome to the \"Terms Extraction\" program. \n" +
-            "This is effective and easy-to-use program that would be useful in learning the theory of software testing.\n" +
+    private static final String HELP = "Welcome to the \"Term Extraction\" program.\n" +
+            "This is effective and easy-to-use program that would be useful in learning the theory of Software Testing.\n" +
             "\n" +
-            "How to use the Terms Extraction program:\n" +
-            "Type any combination of words or text. Also you can use articles. Click on the option \"File\" and choose the txt-file in folder.\n" +
-            "Click on the \"Search\" button and  you will be able to see the result. \n" +
-            "The terms extracted from texts using glossaries are highlighted in blue. In this case you could read term definitions (in \"The Glossary Defiitions\" field). \n" +
-            "The terms / term candidates extracted from texts using terms' peculairities (not stored in glossaries) are highlighted in green.\n" +
-            "Click on the \"Clear\" button to clear all fields.\n" +
+            "How to use the \"Term Extraction\" program:\n" +
+            "\n" +
+            "Type a text for extracting terms. Also you may open a txt-file in a folder clicking on the option \"Open File\".\n" +
+            "\n" +
+            "Then click on the \"Extract\" button and you will be able to see a result:\n" +
+            "\n" +
+            "1. The terms extracted from texts using glossaries are highlighted in blue. \n" +
+            "In this case, clicking on the terms, you may read their definitions (in the \"Glossary Definition\" field).\n" +
+            "2. The terms (term candidates) extracted from texts using terms' peculiarities (not stored in glossaries) are highlighted in green.\n" +
+            "\n" +
+            "Click on the \"Clear\" button to clear all the fields.\n" +
             "\n" +
             "We are doing our best to offer you quality results.\n" +
-            "However, there can still be some inaccurate terms. \n" +
+            "However, there can still be some inaccurate terms.\n" +
             "We apologize for the inconvenience.";
 
     @FXML
@@ -70,7 +75,7 @@ public class Controller {
         });
         help.setGraphic(helpLabel);
 
-        Label addLabel = new Label("Add file");
+        Label addLabel = new Label("Open file");
         addLabel.setOnMouseClicked(event -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Resource File");
@@ -123,26 +128,32 @@ public class Controller {
         for (int i = 0; i < parsedWords.size(); i++) {
             if (!parsedWords.get(i).isUsed()) {
                 String text = ((Text) parsedWords.get(i).node).getText();
-                Matcher m = Pattern.compile("\\([A-Z]{2,}\\)").matcher(text);
+                Matcher m = Pattern.compile("[A-Z]{2,}").matcher(text);
 
                 if (m.find()) {
                     String abbr = m.group();
-                    int abbrLength = abbr.length() - 2;
+                    int abbrLength = abbr.length();
                     int startAbbr = m.start();
-                    if (text.charAt(startAbbr - 1) == ' ') {
-                        startAbbr -= 1;
-                    }
+                    int endAbbr = m.end();
 
-                    for (int j = abbrLength; j > 0; j--) {
-                        startAbbr = text.lastIndexOf(' ', startAbbr - 1);
+                    if (startAbbr > 0 && text.charAt(startAbbr - 1) == '(' &&
+                            endAbbr < text.length() && text.charAt(endAbbr) == ')') {
+                        if (text.charAt(startAbbr - 1) == ' ') {
+                            startAbbr -= 1;
+                        }
+
+                        for (int j = abbrLength; j > 0; j--) {
+                            startAbbr = text.lastIndexOf(' ', startAbbr - 1);
+                        }
+                        endAbbr += 1;
                     }
 
                     parsedWords.set(i, new WordEntity(false, new Text(text.substring(0, startAbbr))));
                     Text foundText = new Text();
                     foundText.setFill(Paint.valueOf("#008000"));
-                    foundText.setText(text.substring(startAbbr, m.end()));
+                    foundText.setText(text.substring(startAbbr, endAbbr));
                     parsedWords.add(i + 1, new WordEntity(true, foundText));
-                    parsedWords.add(i + 2, new WordEntity(false, new Text(text.substring(m.end()))));
+                    parsedWords.add(i + 2, new WordEntity(false, new Text(text.substring(endAbbr))));
                     i = 0;
                 }
             }

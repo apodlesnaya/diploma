@@ -61,13 +61,6 @@
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>javafx</groupId>
-            <artifactId>jfxrt</artifactId>
-            <version>1.8</version>
-            <scope>system</scope>
-            <systemPath>C:/Program Files/Java/jre1.8.0_162/lib/ext/jfxrt.jar</systemPath>
-        </dependency>
 
         <dependency>
             <groupId>org.xerial</groupId>
