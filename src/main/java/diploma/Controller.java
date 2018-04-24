@@ -1,7 +1,11 @@
 package diploma;
 
 import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -11,6 +15,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -138,8 +143,9 @@ public class Controller {
 
                     if (startAbbr > 0 && text.charAt(startAbbr - 1) == '(' &&
                             endAbbr < text.length() && text.charAt(endAbbr) == ')') {
-                        if (text.charAt(startAbbr - 1) == ' ') {
-                            startAbbr -= 1;
+
+                        if (text.charAt(startAbbr - 2) == ' ') {
+                            startAbbr -= 2;
                         }
 
                         for (int j = abbrLength; j > 0; j--) {
@@ -212,11 +218,36 @@ public class Controller {
     }
 
     public void onSearchClicked(ActionEvent actionEvent) {
-        findTerms();
-        findQuotes();
-        findAbbreviations();
+        Platform.runLater(() -> {
+            Stage progressBar = new ProgressBar().create();
 
-        printResult();
+            progressBar.show();
+            Task task = new Task() {
+                @Override
+                protected Object call() {
+                    findTerms();
+                    findQuotes();
+                    findAbbreviations();
+
+                    return null;
+                }
+            };
+
+            task.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED, event -> {
+                progressBar.hide();
+                printResult();
+            });
+            task.addEventHandler(WorkerStateEvent.WORKER_STATE_FAILED, event -> {
+                progressBar.hide();
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("There are some claims conflict in your text! Please, fix and try again");
+                alert.show();
+            });
+            new Thread(task).start();
+
+        });
     }
 
 }
