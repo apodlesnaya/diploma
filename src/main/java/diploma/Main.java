@@ -1,15 +1,9 @@
 package diploma;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 
@@ -20,7 +14,6 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/sample.fxml"));
         primaryStage.setTitle("Term Extraction");
         primaryStage.setScene(new Scene(root, 600, 400));
-        primaryStage.setResizable(false);
 
         primaryStage.show();
     }

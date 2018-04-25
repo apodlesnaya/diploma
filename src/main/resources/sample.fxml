@@ -1,38 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane fx:id="pane" prefHeight="400" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="diploma.Controller">
+<AnchorPane fx:id="pane" maxWidth="Infinity" prefHeight="600.0" prefWidth="800.0"
+            xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="diploma.Controller">
 
-    <MenuBar id="menuBar" focusTraversable="true" prefWidth="640.0">
+    <MenuBar fx:id="menuBar" focusTraversable="true" prefHeight="25.0" AnchorPane.leftAnchor="0.0"
+             AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <Menu fx:id="addFile"/>
         <Menu fx:id="help"/>
     </MenuBar>
 
-    <Label layoutX="15.0" layoutY="33.0" text="Please, input your text here:"/>
-    <TextArea fx:id="textArea" layoutX="15.0" layoutY="50.0" prefHeight="200.0" prefWidth="280.0" wrapText="true"/>
-    <Button fx:id="searchBt" layoutX="275.0" layoutY="351.0" mnemonicParsing="false" text="Extract" onAction="#onSearchClicked"/>
-    <Button fx:id="clearBt" layoutX="75.0" layoutY="351.0" mnemonicParsing="false" text="Clear"
-            onAction="#onClearButtonClicked"/>
-    <Label layoutX="305.0" layoutY="33.0" text="Result"/>
-    <ScrollPane hbarPolicy="NEVER" layoutX="305.0" layoutY="50.0">
-        <TextFlow fx:id="convertedText" prefHeight="198.0" prefWidth="278.0" style="-fx-background-color: #f2f2f2;">
+    <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="160.0" AnchorPane.leftAnchor="10.0"
+               AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="30.0">
+        <AnchorPane>
+            <Label text="Please, input your text here:" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                   AnchorPane.topAnchor="0.0">
+                <padding>
+                    <Insets bottom="3.0" left="10.0" top="3.0"/>
+                </padding>
+            </Label>
+
+            <TextArea fx:id="textArea" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                      AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0"/>
             <padding>
-                <Insets bottom="5.0" left="7.0" right="15.0" top="5.0"/>
+                <Insets bottom="5.0" left="5.0" right="5.0"/>
             </padding>
-        </TextFlow>
-    </ScrollPane>
-    <Label layoutX="15.0" layoutY="253.0" text="Glossary definition"/>
-    <ScrollPane hbarPolicy="NEVER" layoutX="15.0" layoutY="270.0">
-        <TextFlow fx:id="explanationText" prefHeight="60.0" prefWidth="570.0"
-                  style="-fx-border-color: #c4c4c4; -fx-background-color: #f2f2f2;" textAlignment="JUSTIFY">
+        </AnchorPane>
+
+        <AnchorPane>
+            <Label text="Result" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <padding>
+                    <Insets bottom="3.0" left="10.0" top="3.0"/>
+                </padding>
+            </Label>
+
+
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                        AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+                <TextFlow fx:id="convertedText" style="-fx-background-color: #f2f2f2;">
+                    <padding>
+                        <Insets bottom="5.0" left="10.0"/>
+                    </padding>
+                </TextFlow>
+            </ScrollPane>
             <padding>
-                <Insets bottom="5.0" left="7.0" right="15.0" top="5.0"/>
+                <Insets bottom="5.0" left="5.0" right="5.0"/>
             </padding>
-        </TextFlow>
-    </ScrollPane>
+        </AnchorPane>
+    </SplitPane>
+
+    <AnchorPane prefHeight="120.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="10.0"
+                AnchorPane.rightAnchor="10.0">
+        <Label text="Glossary definition">
+            <padding>
+                <Insets bottom="3.0" left="10.0" top="3.0"/>
+            </padding>
+        </Label>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+            <TextFlow fx:id="explanationText" style="-fx-border-color:transparent; -fx-background-color: #f2f2f2;"
+                      textAlignment="JUSTIFY"/>
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+        </ScrollPane>
+        <padding>
+            <Insets bottom="5.0"/>
+        </padding>
+    </AnchorPane>
+
+    <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <Button fx:id="searchBt" mnemonicParsing="false" onAction="#onSearchClicked" prefWidth="100.0" text="Extract"
+                AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0"/>
+        <Button fx:id="clearBt" mnemonicParsing="false" onAction="#onClearButtonClicked" prefWidth="100.0" text="Clear"
+                AnchorPane.leftAnchor="10.0"/>
+    </AnchorPane>
+
 </AnchorPane>

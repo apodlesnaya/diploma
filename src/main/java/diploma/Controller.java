@@ -4,10 +4,11 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
@@ -15,6 +16,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.BufferedReader;
@@ -28,6 +30,8 @@ import java.util.regex.Pattern;
 
 public class Controller {
 
+    @FXML
+    public MenuBar menuBar;
     @FXML
     private TextArea textArea;
     @FXML
@@ -219,35 +223,44 @@ public class Controller {
 
     public void onSearchClicked(ActionEvent actionEvent) {
         Platform.runLater(() -> {
-            Stage progressBar = new ProgressBar().create();
+            try {
+                Stage progressBar = new Stage();
+                progressBar.initModality(Modality.APPLICATION_MODAL);
+                Parent parent = FXMLLoader.load(getClass().getResource("/progress.fxml"));
+                Scene scene = new Scene(parent);
+                progressBar.setScene(scene);
+                progressBar.setResizable(false);
 
-            progressBar.show();
-            Task task = new Task() {
-                @Override
-                protected Object call() {
-                    findTerms();
-                    findQuotes();
-                    findAbbreviations();
+                progressBar.show();
+                Task task = new Task() {
+                    @Override
+                    protected Object call() {
+                        findTerms();
+                        findQuotes();
+                        findAbbreviations();
 
-                    return null;
-                }
-            };
+                        return null;
+                    }
+                };
 
-            task.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED, event -> {
-                progressBar.hide();
-                printResult();
-            });
-            task.addEventHandler(WorkerStateEvent.WORKER_STATE_FAILED, event -> {
-                progressBar.hide();
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("There are some claims conflict in your text! Please, fix and try again");
-                alert.show();
-            });
-            new Thread(task).start();
-
+                task.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED, event -> {
+                    progressBar.hide();
+                    printResult();
+                });
+                task.addEventHandler(WorkerStateEvent.WORKER_STATE_FAILED, event -> {
+                    progressBar.hide();
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("There are some claims conflict in your text! Please, fix and try again");
+                    alert.show();
+                });
+                new Thread(task).start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
+
     }
 
 }
